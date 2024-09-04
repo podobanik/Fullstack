@@ -28,7 +28,7 @@ class UserRegister(APIView):
 
 class UserLogin(APIView):
     #permission_classes = (permissions.AllowAny, )
-    authentication_classes = (SessionAuthentication, )
+    #authentication_classes = (SessionAuthentication, )
 
     def post(self, request):
         data = request.data
@@ -43,7 +43,7 @@ class UserLogin(APIView):
 
 class UserLogout(APIView):
     #permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (SessionAuthentication, )
+    #authentication_classes = (SessionAuthentication, )
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
@@ -65,7 +65,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UserCheckView(APIView):
     #permission_classes = (permissions.AllowAny, )
-    authentication_classes = (SessionAuthentication, )
+    #authentication_classes = (SessionAuthentication, )
 
     def get(self, request):
         serializer = UserCheckSerializer(request.user)

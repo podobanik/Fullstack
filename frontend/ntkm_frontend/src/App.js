@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import Home from "./Home";
+import {Button, Form, FormGroup, Input, Label} from "reactstrap";
 
 
 export const API_URL_PROBLEMS = "http://127.0.0.1:8000/problems/"
@@ -19,7 +18,9 @@ export const API_URL_OBJECTS_OF_WORK = "http://127.0.0.1:8000/objects_of_work/"
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-axios.defaults.withCredentials = true;
+
+
+
 
 const client = axios.create({
   baseURL: "http://127.0.0.1:8000/"
@@ -33,23 +34,25 @@ function App() {
   const [password, setPassword] = useState('');
   const [registrationToggle, setRegistrationToggle] = useState(null);
   const [username, setUsername] = useState('');
-  const [isStaff, setIsStaff] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-  const [isSuperuser, setIsSuperuser] = useState(false);
+  const [isStaff, setIsStaff] = useState(null);
+  const [isActive, setIsActive] = useState(null);
+  const [isSuperuser, setIsSuperuser] = useState(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [secondName, setSecondName] = useState('');
   const [title, setTitle] = useState('');
-  //const [birthday, setBirthday] = useState(date.today());
+  const [birthday, setBirthday] = useState(new Date());
   const [phone, setPhone] = useState(0);
-  //const [sector, setSector] = useState([]);
+  const [sector, setSector] = useState([]);
 
  
 
   
   useEffect(() => {
-    client.get("/user/")
-    .then(function(res) {
+    client.get("/user/",
+    {
+      withCredentials: true
+    }).then(function(res) {
       setCurrentUser(true);
     })
     .catch(function(error) {
@@ -80,7 +83,7 @@ function App() {
         first_name: firstName,
         last_name: lastName,
         second_name: secondName,
-        //birthday: birthday,
+        birthday: birthday,
         title: title,
         phone: phone
       }
@@ -90,6 +93,9 @@ function App() {
         {
           email: email,
           password: password
+        },
+        {
+          withCredentials: true
         }
       ).then(function(res) {
         setCurrentUser(true);
@@ -104,6 +110,9 @@ function App() {
       {
         email: email,
         password: password
+      },
+      {
+        withCredentials: true
       }
     ).then(function(res) {
       setCurrentUser(true);
@@ -114,7 +123,9 @@ function App() {
     e.preventDefault();
     client.post(
       "/logout/",
-      {withCredentials: true}
+      {
+        withCredentials: true,
+      }
     ).then(function(res) {
       setCurrentUser(false);
     });
@@ -160,25 +171,47 @@ function App() {
       registrationToggle ? (
         <div className="center">
           <Form onSubmit={e => submitRegistration(e)}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Адрес электронной почты</Form.Label>
-              <Form.Control type="email" placeholder="Введите email" value={email} onChange={e => setEmail(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicUsername">
-              <Form.Label>Логин</Form.Label>
-              <Form.Control type="text" placeholder="Введите логин" value={username} onChange={e => setUsername(e.target.value)} />
-            </Form.Group>
+            <FormGroup className='mb-3' controlId='formBasicEmail'>
+              <Label for="email">Адрес электронной почты:</Label>
+              <Input
+                  type="email"
+                  name="email"
+                  placeholder='Введите email'
+                  onChange={e => setEmail(e.target.value)}
+                  value={email}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicUsername'>
+              <Label for="username">Логин:</Label>
+              <Input
+                  type="text"
+                  name="username"
+                  placeholder='Введите логин'
+                  onChange={e => setUsername(e.target.value)}
+                  value={username}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicPassword'>
+              <Label for="password">Пароль:</Label>
+              <Input
+                  type="password"
+                  name="password"
+                  placeholder='Введите пароль'
+                  onChange={e => setPassword(e.target.value)}
+                  value={password}
+              />
+            </FormGroup>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Пароль</Form.Label>
               <Form.Control type="password" placeholder="Введите пароль" value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicFirstName">
-              <Form.Label>Имя сотрудника</Form.Label>
-              <Form.Control type="text" placeholder="Введите имя" value={firstName} onChange={e => setFirstName(e.target.value)} />
-            </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicLastName">
               <Form.Label>Фамилия сотрудника</Form.Label>
               <Form.Control type="text" placeholder="Введите фамилию" value={lastName} onChange={e => setLastName(e.target.value)} />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicFirstName">
+              <Form.Label>Имя сотрудника</Form.Label>
+              <Form.Control type="text" placeholder="Введите имя" value={firstName} onChange={e => setFirstName(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicSecondName">
               <Form.Label>Отчество сотрудника</Form.Label>
@@ -192,19 +225,37 @@ function App() {
               <Form.Label>Телефон</Form.Label>
               <Form.Control type="number" placeholder="Введите номер телефона" value={phone} onChange={e => setPhone(e.target.value)} />
             </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicBirthday">
+              <Form.Label>День рождения</Form.Label>
+              <Form.Control type="Date" placeholder="Введите дату рождения" value={birthday} onChange={e => setBirthday(e.target.value)} />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label for="sectorSelect">
+                    Выберите сектор
+                </Form.Label>
+                <Form.Select
+                    id="sectorSelect"
+                    name="sector"
+                    type="select"
+                    onChange={e => setSector(e.target.value}
+                >
+                    <option value={problem.problem_type}>{problem_type_all?.filter(start => start.id === problem.problem_type).map(filtered => filtered.problem_type_text)}</option>
+                    {problem_type_all?.map((problem_type) => <option key={problem_type.id} value={problem_type.id}>{problem_type.problem_type_text}</option>)}     
+                </Form.Select>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicIsSuperuser">
-              <Form.Check // prettier-ignore
+              <Form.Check
                 type="switch"
-                id="custom-switch"
+                id="isSuperuserSwitch"
                 label="Суперпользователь"
                 value={isSuperuser}
                 onChange={e => setIsSuperuser(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicIsStaff">
-              <Form.Check // prettier-ignore
+              <Form.Check
                 type="switch"
-                id="custom-switch"
+                id="isStaffSwitch"
                 label="Администратор"
                 value={isStaff}
                 onChange={e => setIsStaff(e.target.value)}
@@ -213,7 +264,7 @@ function App() {
             <Form.Group className="mb-3" controlId="formBasicIsActive">
               <Form.Check // prettier-ignore
                 type="switch"
-                id="custom-switch"
+                id="isActiveSwitch"
                 label="Активный"
                 value={isActive}
                 onChange={e => setIsActive(e.target.value)}

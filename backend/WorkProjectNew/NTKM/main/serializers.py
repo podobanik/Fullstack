@@ -16,13 +16,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
-        read_only_field = 'last_login'
+        read_only_fields = ('last_login', 'date_joined', )
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+        read_only_fields = ('last_login', 'date_joined', )
 
     def create(self, validated_data):
         user_obj = User.objects.create_user(email=validated_data['email'], password=validated_data['password'])

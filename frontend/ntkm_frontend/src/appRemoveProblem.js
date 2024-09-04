@@ -3,13 +3,17 @@ import {Button, Modal, ModalHeader, ModalFooter} from "reactstrap";
 import axios from "axios";
 import {API_URL_PROBLEMS} from "./App";
 
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+
 const AppRemoveProblem = (props) => {
     const [visible, setVisible] = useState(false)
     const toggle = () => {
         setVisible(!visible)
     }
     const deleteProblem = () => {
-        axios.delete(API_URL_PROBLEMS + props.pk).then(() => {
+        axios.delete(API_URL_PROBLEMS + props.pk, {withCredentials: true}).then(() => {
             props.resetState()
             toggle();
         });

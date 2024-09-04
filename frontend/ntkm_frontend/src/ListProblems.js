@@ -1,6 +1,7 @@
 import {Table} from "reactstrap";
 import ModalProblem from "./ModalProblem";
 import AppRemoveProblem from "./appRemoveProblem.js";
+import moment from 'moment';
 
 
 const ListProblems = (props) => {
@@ -39,9 +40,9 @@ const ListProblems = (props) => {
                         <td>{Array.isArray(problem_type_all) && problem_type_all?.filter((problem_type) => problem_type.id === problem.problem_type).map(filteredProblemType => (filteredProblemType.problem_type_text))}</td>
                         <td>{Array.isArray(problem_status_all) && problem_status_all?.filter((problem_status) => problem_status.id === problem.problem_status).map(filteredProblemStatus => (filteredProblemStatus.problem_status_text))}</td>
                         <td>{Array.isArray(objects_of_work) && objects_of_work?.filter((object_of_work) => object_of_work.id === problem.object_of_work).map(filteredObjectOfWork => (filteredObjectOfWork.object_of_work_text))}</td>
-                        <td>{problem.control_date}</td>
-                        <td>{problem.add_date}</td>
-                        <td>{problem.change_date}</td>
+                        <td>{moment(problem.control_date).format('DD.MM.YYYY')}</td>
+                        <td>{moment(problem.add_date).format('DD.MM.YYYY, hh:mm')}</td>
+                        <td>{moment(problem.change_date).format('DD.MM.YYYY, hh:mm')}</td>
                         <td>
                             <ModalProblem
                                 create={false}
