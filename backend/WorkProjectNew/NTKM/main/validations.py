@@ -1,21 +1,31 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-AppUser = get_user_model()
+User = get_user_model()
 
 
 def custom_validation(data):
     email = data['email'].strip()
     username = data['username'].strip()
     password = data['password'].strip()
+    first_name = data['first_name'].strip()
+    last_name = data['last_name'].strip()
 
-    if not email or AppUser.objects.filter(email=email).exists():
+
+    if not email or User.objects.filter(email=email).exists():
         raise ValidationError('Введите другой адрес электронной почты.')
 
     if not password or len(password) < 8:
         raise ValidationError('Выберите другой пароль, минимальная длина пароля 8 сиволов.')
 
-    if not username or AppUser.objects.filter(username=username).exists():
-        raise ValidationError('Выберите другое имя пользователя.')
+    if not username or User.objects.filter(username=username).exists():
+        raise ValidationError('Выберите другой логин.')
+
+    if not first_name:
+        raise ValidationError('Необходимо ввести имя пользователя.')
+
+    if not last_name:
+        raise ValidationError('Необходимо ввести фамилию пользователя.')
+
 
     return data
 

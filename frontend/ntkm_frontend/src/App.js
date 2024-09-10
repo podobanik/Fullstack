@@ -42,13 +42,14 @@ function App() {
   const [secondName, setSecondName] = useState('');
   const [title, setTitle] = useState('');
   const [birthday, setBirthday] = useState(new Date());
-  const [phone, setPhone] = useState(0);
-  const [sector, setSector] = useState([]);
-
+  const [phone, setPhone] = useState(null);
+  const [sector, setSector] = useState(null);
+  const [sectors, setSectors] = useState([])
  
 
   
   useEffect(() => {
+    getSectors()
     client.get("/user/",
     {
       withCredentials: true
@@ -59,6 +60,13 @@ function App() {
       setCurrentUser(false);
     });
   }, []);
+
+
+  const getSectors = (data)=>{
+    axios.get(API_URL_SECTORS, {withCredentials: true}).then(data => setSectors(data.data))
+  }
+
+
   function update_form_btn() {
     if (registrationToggle) {
       document.getElementById("form_btn").innerHTML = "Регистрация";
@@ -85,7 +93,8 @@ function App() {
         second_name: secondName,
         birthday: birthday,
         title: title,
-        phone: phone
+        phone: phone,
+        sector_id: sector
       }
     ).then(function(res) {
       client.post(
@@ -201,75 +210,119 @@ function App() {
                   value={password}
               />
             </FormGroup>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Пароль</Form.Label>
-              <Form.Control type="password" placeholder="Введите пароль" value={password} onChange={e => setPassword(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicLastName">
-              <Form.Label>Фамилия сотрудника</Form.Label>
-              <Form.Control type="text" placeholder="Введите фамилию" value={lastName} onChange={e => setLastName(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicFirstName">
-              <Form.Label>Имя сотрудника</Form.Label>
-              <Form.Control type="text" placeholder="Введите имя" value={firstName} onChange={e => setFirstName(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicSecondName">
-              <Form.Label>Отчество сотрудника</Form.Label>
-              <Form.Control type="text" placeholder="Введите отчество" value={secondName} onChange={e => setSecondName(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicTitle">
-              <Form.Label>Должность</Form.Label>
-              <Form.Control type="text" placeholder="Введите должность" value={title} onChange={e => setTitle(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPhone">
-              <Form.Label>Телефон</Form.Label>
-              <Form.Control type="number" placeholder="Введите номер телефона" value={phone} onChange={e => setPhone(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicBirthday">
-              <Form.Label>День рождения</Form.Label>
-              <Form.Control type="Date" placeholder="Введите дату рождения" value={birthday} onChange={e => setBirthday(e.target.value)} />
-            </Form.Group>
-            <Form.Group>
-                <Form.Label for="sectorSelect">
-                    Выберите сектор
-                </Form.Label>
-                <Form.Select
-                    id="sectorSelect"
-                    name="sector"
-                    type="select"
-                    onChange={e => setSector(e.target.value}
-                >
-                    <option value={problem.problem_type}>{problem_type_all?.filter(start => start.id === problem.problem_type).map(filtered => filtered.problem_type_text)}</option>
-                    {problem_type_all?.map((problem_type) => <option key={problem_type.id} value={problem_type.id}>{problem_type.problem_type_text}</option>)}     
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicIsSuperuser">
-              <Form.Check
-                type="switch"
-                id="isSuperuserSwitch"
-                label="Суперпользователь"
-                value={isSuperuser}
-                onChange={e => setIsSuperuser(e.target.value)}
+            <FormGroup className='mb-3' controlId='formBasicLastName'>
+              <Label for="last_name">Фамилия сотрудника:</Label>
+              <Input
+                  type="text"
+                  name="last_name"
+                  placeholder='Введите фамилию'
+                  onChange={e => setLastName(e.target.value)}
+                  value={lastName}
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicIsStaff">
-              <Form.Check
-                type="switch"
-                id="isStaffSwitch"
-                label="Администратор"
-                value={isStaff}
-                onChange={e => setIsStaff(e.target.value)}
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicFirstName'>
+              <Label for="first_name">Имя сотрудника:</Label>
+              <Input
+                  type="text"
+                  name="first_name"
+                  placeholder='Введите имя'
+                  onChange={e => setFirstName(e.target.value)}
+                  value={firstName}
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicIsActive">
-              <Form.Check // prettier-ignore
-                type="switch"
-                id="isActiveSwitch"
-                label="Активный"
-                value={isActive}
-                onChange={e => setIsActive(e.target.value)}
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicSecondName'>
+              <Label for="second_name">Отчество сотрудника:</Label>
+              <Input
+                  type="text"
+                  name="second_name"
+                  placeholder='Введите отчество (при наличии)'
+                  onChange={e => setSecondName(e.target.value)}
+                  value={secondName}
               />
-            </Form.Group>
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicTitle'>
+              <Label for="title">Должность:</Label>
+              <Input
+                  type="text"
+                  name="title"
+                  placeholder='Введите должность'
+                  onChange={e => setTitle(e.target.value)}
+                  value={title}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicPhone'>
+              <Label for="phone">Телефон:</Label>
+              <Input
+                  type="number"
+                  name="phone"
+                  placeholder='Введите номер телефона'
+                  onChange={e => setPhone(e.target.value)}
+                  value={phone}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicBirthday'>
+              <Label for="birthday">День рождения:</Label>
+              <Input
+                  type="date"
+                  name="birthday"
+                  placeholder='Выберите дату'
+                  onChange={e => setBirthday(e.target.value)}
+                  value={birthday}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="sectorSelect">
+                Выберите сектор
+              </Label>
+              <Input
+                  id="sectorSelect"
+                  name="sector"
+                  type="select"
+                  onChange={e => setSector(e.target.value)}
+              >
+                  <option value={sector}>{"---"}</option>
+                  {sectors?.map((sector) => <option key={sector.id} value={sector.id}>{sector.sector_text}</option>)}     
+              </Input>
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicIsSuperuser'>
+              <Label for="isSuperuser">
+                Суперпользователь:
+              </Label>
+              <Input
+                  type="switch"
+                  id="isSuperuser"
+                  checked={isSuperuser}
+                  onClick={() => {
+                  setIsSuperuser(!isSuperuser);
+                  }}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicIsStaff'>
+              <Label for="isStaff">
+                Доступ к администрированию:
+              </Label>
+              <Input
+                  type="switch"
+                  id="isStaff"
+                  checked={isStaff}
+                  onClick={() => {
+                  setIsStaff(!isStaff);
+                  }}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicIsActive'>
+              <Label for="isActive">
+                Активный пользователь:
+              </Label>
+              <Input
+                  type="switch"
+                  id="isActive"
+                  checked={isActive}
+                  onClick={() => {
+                  setIsActive(!isActive);
+                  }}
+              />
+            </FormGroup>
             <Button variant="primary" type="submit">
               Подтвердить регистрацию
             </Button>
@@ -278,14 +331,26 @@ function App() {
       ) : (
         <div className="center">
           <Form onSubmit={e => submitLogin(e)}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Адрес электронной почты</Form.Label>
-              <Form.Control type="email" placeholder="Введите email" value={email} onChange={e => setEmail(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Пароль</Form.Label>
-              <Form.Control type="password" placeholder="Введите пароль" value={password} onChange={e => setPassword(e.target.value)} />
-            </Form.Group>
+            <FormGroup className='mb-3' controlId='formBasicEmail'>
+              <Label for="email">Адрес электронной почты:</Label>
+              <Input
+                  type="email"
+                  name="email"
+                  placeholder='Введите email'
+                  onChange={e => setEmail(e.target.value)}
+                  value={email}
+              />
+            </FormGroup>
+            <FormGroup className='mb-3' controlId='formBasicPassword'>
+              <Label for="password">Пароль:</Label>
+              <Input
+                  type="password"
+                  name="password"
+                  placeholder='Введите пароль'
+                  onChange={e => setPassword(e.target.value)}
+                  value={password}
+              />
+            </FormGroup>
             <Button variant="primary" type="submit">
               Подтвердить
             </Button>

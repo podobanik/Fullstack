@@ -34,7 +34,7 @@ const ListProblems = (props) => {
                     </td>
                 </tr>
             ) : Array.isArray(problems) && problems?.map(problem => (
-                    <tr key={problem.pk}>
+                    <tr key={problem.id}>
                         <td>{problem.problem_text}</td>
                         <td>{Array.isArray(users) && users?.filter((user) => user.user_id === problem.user).map(filteredUser => (filteredUser.last_name + " " + filteredUser.first_name + " " + filteredUser.second_name))}</td>
                         <td>{Array.isArray(problem_type_all) && problem_type_all?.filter((problem_type) => problem_type.id === problem.problem_type).map(filteredProblemType => (filteredProblemType.problem_type_text))}</td>
