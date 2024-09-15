@@ -1,7 +1,7 @@
 import {Fragment, useState} from "react";
 import {Button, Modal, ModalHeader, ModalFooter} from "reactstrap";
 import axios from "axios";
-import {API_URL_PROBLEMS} from "./App";
+import {API_URL_PROBLEMS} from "../App/App";
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';

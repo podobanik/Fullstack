@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Button, Form, FormGroup, Input, Label} from "reactstrap";
 import axios from "axios";
-import {API_URL_PROBLEMS} from "./App";
+import {API_URL_PROBLEMS} from "../App/App";
 
 
 axios.defaults.xsrfCookieName = 'csrftoken';

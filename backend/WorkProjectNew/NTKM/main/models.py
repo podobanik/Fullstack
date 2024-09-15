@@ -90,7 +90,7 @@ class User(AbstractUser, PermissionsMixin):
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     second_name = models.CharField(max_length=150, verbose_name='Отчество')
-    sector = models.ForeignKey(Sector, null=True, on_delete=models.DO_NOTHING, verbose_name='Сектор сотрудника')
+    sector = models.ForeignKey(Sector, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Сектор сотрудника')
     title = models.CharField(max_length=150, verbose_name='Должность')
     birthday = models.DateField(default=date.today(), verbose_name='День рождения')
     phone = models.IntegerField(verbose_name='Номер телефона', blank=True, null=True)
@@ -110,16 +110,16 @@ class Problem(models.Model):
         verbose_name_plural = 'Задачи'
 
     problem_text = models.TextField(max_length=1000, verbose_name='Введите название задачи')
-    problem_status = models.ForeignKey(ProblemStatus, blank=True, null=True, on_delete=models.PROTECT,
+    problem_status = models.ForeignKey(ProblemStatus, blank=True, null=True, on_delete=models.SET_NULL,
                                        verbose_name='Выберите статус задачи')
-    object_of_work = models.ForeignKey(ObjectOfWork, blank=True, null=True, on_delete=models.PROTECT,
+    object_of_work = models.ForeignKey(ObjectOfWork, blank=True, null=True, on_delete=models.SET_NULL,
                                        verbose_name='Объект АСУТП')
-    problem_type = models.ForeignKey(ProblemType, blank=True, null=True, on_delete=models.PROTECT,
+    problem_type = models.ForeignKey(ProblemType, blank=True, null=True, on_delete=models.SET_NULL,
                                      verbose_name='Выберите тип мероприятия')
     control_date = models.DateField(default=0, verbose_name='Контрольный срок')
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления задачи')
     change_date = models.DateTimeField(auto_now=True, verbose_name='Дата изменения задачи')
-    user = models.ForeignKey(User, verbose_name="Сотрудник", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name="Сотрудник", on_delete=models.SET_NULL)
 
 
 

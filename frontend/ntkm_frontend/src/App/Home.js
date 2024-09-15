@@ -1,9 +1,10 @@
 import {Container, Row, Col} from "reactstrap";
-import ListProblems from "./ListProblems";
+import ListProblems from "../Problems/ListProblems";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import ModalProblem from "./ModalProblem";
+import ModalProblem from "../Problems/ModalProblem";
 import {API_URL_PROBLEMS, API_URL_USERS, API_URL_PROBLEM_STATUS_ALL, API_URL_PROBLEM_TYPE_ALL, API_URL_OBJECTS_OF_WORK, API_URL_SECTORS} from "./App";
+import { BasicTable } from "../components/BasicTable";
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -68,7 +69,7 @@ const Home = () => {
         <Container style={{marginTop: "20px"}}>
             <Row>
                 <Col>
-                    <ListProblems problems={problems} users={users} sectors={sectors} problem_status_all={problem_status_all} problem_type_all={problem_type_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
+                    <BasicTable problems={problems} users={users} sectors={sectors} problem_status_all={problem_status_all} problem_type_all={problem_type_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
                 </Col>
             </Row>
             <Row>
