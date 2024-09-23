@@ -1,3 +1,7 @@
+import moment from 'moment'
+
+
+
 export const COLUMNS = [
     {
         Header: 'Краткое описание задачи',
@@ -21,14 +25,12 @@ export const COLUMNS = [
     },
     {
         Header: 'Контрольный срок',
-        accessor: 'control_date'
+        accessor: 'control_date',
+        Cell: ({value}) => {return moment(value).format('DD.MM.YYYY')}
     },
     {
         Header: 'Дата добавления',
-        accessor: 'add_date'
-    },
-    {
-        Header: 'Дата изменения',
-        accessor: 'change_date'
-    },
+        accessor: 'add_date',
+        Cell: ({value}) => {return moment(value).format('DD.MM.YYYY, hh:mm')}
+    }
 ]

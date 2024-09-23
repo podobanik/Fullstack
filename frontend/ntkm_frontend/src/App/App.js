@@ -144,7 +144,7 @@ function App() {
   if (currentUser) {
     return (
       <div>
-        <Navbar bg="dark" variant="dark">
+        <Navbar bg="info" variant="info">
           <Container>
             <Navbar.Brand>Учёт работ ОСПАС</Navbar.Brand>
             <Navbar.Toggle />
