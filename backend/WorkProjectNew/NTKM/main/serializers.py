@@ -5,14 +5,15 @@ from rest_framework import serializers
 from .models import Problem, User, Sector, ProblemType, ProblemStatus, ObjectOfWork
 
 
-class ProblemSerializer(serializers.ModelSerializer):
+class SectorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Problem
-        fields = "__all__"
-        read_only_fields = ('add_date', 'change_date', )
+        model = Sector
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
+    sector = SectorSerializer()
+
     class Meta:
         model = User
         fields = "__all__"
@@ -20,6 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    sector = SectorSerializer()
+
     class Meta:
         model = User
         fields = '__all__'
@@ -49,12 +52,6 @@ class UserCheckSerializer(serializers.ModelSerializer):
         fields = ('email', 'username')
 
 
-class SectorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sector
-        fields = '__all__'
-
-
 class ProblemStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemStatus
@@ -71,3 +68,15 @@ class ObjectOfWorkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ObjectOfWork
         fields = '__all__'
+
+
+class ProblemSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    object_of_work = ObjectOfWorkSerializer()
+    problem_status = ProblemStatusSerializer()
+    problem_type = ProblemTypeSerializer()
+
+    class Meta:
+        model = Problem
+        fields = "__all__"
+        read_only_fields = ('add_date', 'change_date', )

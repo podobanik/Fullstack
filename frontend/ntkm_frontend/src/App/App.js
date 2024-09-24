@@ -43,13 +43,12 @@ function App() {
   const [title, setTitle] = useState('');
   const [birthday, setBirthday] = useState(new Date());
   const [phone, setPhone] = useState(null);
-  const [sector, setSector] = useState(null);
-  const [sectors, setSectors] = useState([])
+  //const [sector, setSector] = useState(null);
  
 
   
   useEffect(() => {
-    getSectors()
+    //getSectors()
     client.get("/user/",
     {
       withCredentials: true
@@ -62,9 +61,9 @@ function App() {
   }, []);
 
 
-  const getSectors = (data)=>{
-    axios.get(API_URL_SECTORS, {withCredentials: true}).then(data => setSectors(data.data))
-  }
+   //const getSectors = (data)=>{
+     //axios.get(API_URL_SECTORS, {withCredentials: true}).then(data => setSector(data.data))
+   //}
 
 
   function update_form_btn() {
@@ -94,7 +93,7 @@ function App() {
         birthday: birthday,
         title: title,
         phone: phone,
-        sector_id: sector
+        //user[sector]: sector
       }
     ).then(function(res) {
       client.post(
@@ -270,7 +269,7 @@ function App() {
                   value={birthday}
               />
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
               <Label for="sectorSelect">
                 Выберите сектор
               </Label>
@@ -283,7 +282,7 @@ function App() {
                   <option value={sector}>{"---"}</option>
                   {sectors?.map((sector) => <option key={sector.id} value={sector.id}>{sector.sector_text}</option>)}     
               </Input>
-            </FormGroup>
+            </FormGroup> */}
             <FormGroup className='mb-3' controlId='formBasicIsSuperuser'>
               <Label for="isSuperuser">
                 Суперпользователь:

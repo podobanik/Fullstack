@@ -83,7 +83,7 @@ const ProblemForm = (props) => {
                     type="select"
                     onChange={onChange}
                 >
-                    <option value={problem.user}>{users?.filter(start => start.user_id === problem.user).map(filtered => (filtered.last_name + " " + filtered.first_name + " " + filtered.second_name))}</option>
+                    <option value={problem.user}>{(problem.user.last_name + " " + problem.user.first_name + " " + problem.user.second_name)}</option>
                     {users?.map((user) => <option key={user.user_id} value={user.user_id}> {(user.last_name + " " + user.first_name + " " + user.second_name)}</option>)}     
                 </Input>
             </FormGroup>
