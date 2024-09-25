@@ -1,21 +1,60 @@
 import React, {useMemo} from 'react'
 import { useTable, useSortBy, useGlobalFilter, usePagination} from 'react-table'
 import './table.css';
-import {COLUMNS} from './Columns'
 import { GlobalFilter } from './GlobalFilter';
-
+import moment from 'moment'
 
 
 
 export const ListProblems = (props) => {
     const {problems} = props
+    const {users} = props
+    const {problem_status_all} = props
+    const {problem_type_all} = props
+    const {objects_of_work} = props
 
-    const columns = useMemo(() => COLUMNS, [])
+
+
+    const columns = useMemo(() => [
+      {
+        Header: 'Краткое описание задачи',
+        accessor: 'problem_text'
+      },
+      {
+        Header: 'Ответственный сотрудник',
+        accessor: ({user}) => users?.filter(filterUser => filterUser.user_id === user).map(filteredUser => (filteredUser.last_name + " " + filteredUser.first_name + " " + filteredUser.second_name)),
+      },
+      {
+        Header: 'Категория задачи',
+        accessor: ({problem_type}) => problem_type_all?.filter(filterType => filterType.id === problem_type).map(filteredType => filteredType.problem_type_text),
+      },
+      {
+        Header: 'Статус задачи',
+        accessor: ({problem_status}) => problem_status_all?.filter(filterStatus => filterStatus.id === problem_status).map(filteredStatus => filteredStatus.problem_status_text),
+      },
+      {
+        Header: 'Объект АСУТП',
+        accessor: ({object_of_work}) => objects_of_work?.filter(filterObject => filterObject.id === object_of_work).map(filteredObject => filteredObject.object_of_work_text),
+      },
+      {
+        Header: 'Контрольный срок',
+        accessor: 'control_date',
+        Cell: ({value}) => {return moment(value).format('DD.MM.YYYY')},
+      },
+      {
+        Header: 'Дата добавления',
+        accessor: 'add_date',
+        Cell: ({value}) => {return moment(value).format('DD.MM.YYYY, hh:mm')},
+      }
+    ], [objects_of_work, problem_status_all, problem_type_all, users]) 
+
+
     const data = useMemo(() => problems, [problems])
 
     const tableInstanse = useTable({
         columns,
-        data
+        data,
+        initialState: { pageIndex: 0}
       },
       useGlobalFilter,
       useSortBy,
@@ -27,16 +66,21 @@ export const ListProblems = (props) => {
       getTableBodyProps,
       headerGroups,
       page,
+      pageOptions,
       nextPage,
+      gotoPage,
+      pageCount,
+      setPageSize,
       previousPage,
       canNextPage,
-      canPreviosPage,
+      canPreviousPage,
       prepareRow,
       state,
       setGlobalFilter,
     } = tableInstanse
 
-    const {globalFilter} = state
+    const {globalFilter, pageIndex, pageSize} = state
+
 
     return (
     <>
@@ -63,7 +107,7 @@ export const ListProblems = (props) => {
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell)=>{
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  return <td key={cell.id} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                 })}
               </tr>
             )
@@ -71,8 +115,37 @@ export const ListProblems = (props) => {
         </tbody>
       </table>
       <div>
-        <button onClick={() => previousPage()} disabled={!canPreviosPage}><h3><b>←</b></h3></button>
-        <button onClick={() => nextPage()} disabled={!canNextPage}><h3><b>→</b></h3></button>
+        <span>
+          Страница{' '}
+          <strong>
+            {pageIndex + 1} из {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span>
+          |Перейти на страницу:{' '}
+          <input
+            type='number'
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(pageNumber)
+            }}
+            style={{width: '50px'}}
+          />
+        </span>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</button>
+        <button onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</button>
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</button>
+      </div>
+      <div align="right">
+        <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+          {
+            [10, 25, 50].map(pageSize => (
+              <option key={pageSize} value={pageSize}>Кол-во записей: {pageSize}</option>
+            ))
+          }
+        </select>
       </div>
     </>
   )

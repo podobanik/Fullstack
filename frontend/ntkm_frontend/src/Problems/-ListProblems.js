@@ -1,5 +1,5 @@
 import {Table} from "reactstrap";
-import ModalProblem from "./ModalProblem";
+import ModalProblem from "./ModalProblem.js";
 import AppRemoveProblem from "./appRemoveProblem.js";
 import moment from 'moment';
 

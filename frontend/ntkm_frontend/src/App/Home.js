@@ -2,7 +2,7 @@ import {Container, Row, Col} from "reactstrap";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import ModalProblem from "../Problems/ModalProblem";
-import {API_URL_PROBLEMS, API_URL_USERS, API_URL_PROBLEM_STATUS_ALL, API_URL_PROBLEM_TYPE_ALL, API_URL_OBJECTS_OF_WORK} from "./App";
+import {API_URL_PROBLEMS, API_URL_USERS, API_URL_PROBLEM_STATUS_ALL, API_URL_PROBLEM_TYPE_ALL, API_URL_OBJECTS_OF_WORK, API_URL_SECTORS} from "./App";
 import { ListProblems } from "../components/ListProblems";
 
 
@@ -17,10 +17,12 @@ const Home = () => {
     const [problem_type_all, setProblemTypeAll] = useState([])
     const [problem_status_all, setProblemStatusAll] = useState([])
     const [objects_of_work, setObjectsOfWork] = useState([])
+    const [sectors, setSectors] = useState([])
     
 
 
     useEffect(()=>{
+        getSectors()
         getUsers()
         getProblems()
         getProblemTypeAll()
@@ -29,6 +31,9 @@ const Home = () => {
     },[])
 
 
+    const getSectors = (data)=>{
+        axios.get(API_URL_SECTORS, {withCredentials: true}).then(data => setSectors(data.data))
+    }
     const getUsers = (data)=>{
         axios.get(API_URL_USERS, {withCredentials: true}).then(data => setUsers(data.data))
     }
@@ -48,6 +53,7 @@ const Home = () => {
 
 
     const resetState = () => {
+        getSectors();
         getUsers();
         getProblems();
         getProblemTypeAll();
@@ -60,13 +66,14 @@ const Home = () => {
         <Container style={{marginTop: "20px"}}>
             <Row>
                 <Col>
-                    <ListProblems problems={problems} users={users} problem_type_all={problem_type_all} problem_status_all={problem_status_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
+                    <ListProblems problems={problems} sectors={sectors} users={users} problem_type_all={problem_type_all} problem_status_all={problem_status_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
                 </Col>
             </Row>
             <Row>
                 <Col>
                     <ModalProblem
                     create={true}
+                    sectors={sectors}
                     users={users}
                     problem_type_all={problem_type_all}
                     problem_status_all={problem_status_all}

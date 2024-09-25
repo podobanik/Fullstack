@@ -62,6 +62,9 @@ const ProblemForm = (props) => {
                 props.toggle()
             })
     }
+
+
+        
     return (
         <Form onSubmit={props.newProblem ? submitDataAdd : submitDataEdit}>
             <FormGroup>
@@ -83,8 +86,13 @@ const ProblemForm = (props) => {
                     type="select"
                     onChange={onChange}
                 >
-                    <option value={problem.user}>{(problem.user.last_name + " " + problem.user.first_name + " " + problem.user.second_name)}</option>
-                    {users?.map((user) => <option key={user.user_id} value={user.user_id}> {(user.last_name + " " + user.first_name + " " + user.second_name)}</option>)}     
+                    {!props.newProblem ?
+                        <option value={problem.user}>{users?.filter(filterUser => filterUser.user_id === problem.user).map(filteredUser => (filteredUser.last_name + " " + filteredUser.first_name + " " + filteredUser.second_name))}</option>
+                    :
+                        <option value={null}>{"---"}</option>
+                    }
+                    
+                    {users?.map((user) => <option key={user.user_id} value={user.user_id} onChange={onChange}> {(user.last_name + " " + user.first_name + " " + user.second_name)}</option>)}     
                 </Input>
             </FormGroup>
             <FormGroup>
@@ -97,8 +105,13 @@ const ProblemForm = (props) => {
                     type="select"
                     onChange={onChange}
                 >
-                    <option value={problem.problem_type}>{problem_type_all?.filter(start => start.id === problem.problem_type).map(filtered => filtered.problem_type_text)}</option>
-                    {problem_type_all?.map((problem_type) => <option key={problem_type.id} value={problem_type.id}>{problem_type.problem_type_text}</option>)}     
+                    {!props.newProblem ?
+                        <option value={problem.problem_type}>{problem_type_all?.filter(filterType => filterType.id === problem.problem_type).map(filteredType => filteredType.problem_type_text)}</option>
+                    :
+                        <option value={null}>{"---"}</option>
+                    }
+                    
+                    {problem_type_all?.map((problem_type) => <option key={problem_type.id} value={problem_type.id} onChange={onChange}>{problem_type.problem_type_text}</option>)}     
                 </Input>
             </FormGroup>
             <FormGroup>
@@ -111,8 +124,13 @@ const ProblemForm = (props) => {
                     type="select"
                     onChange={onChange}
                 >
-                    <option value={problem.problem_status}>{problem_status_all?.filter(start => start.id === problem.problem_status).map(filtered => filtered.problem_status_text)}</option>
-                    {problem_status_all?.map((problem_status) => <option key={problem_status.id} value={problem_status.id}>{problem_status.problem_status_text}</option>)}     
+                    {!props.newProblem ?
+                        <option value={problem.problem_status}>{problem_status_all?.filter(filterStatus => filterStatus.id === problem.problem_status).map(filteredStatus => filteredStatus.problem_status_text)}</option>
+                    :
+                        <option value={null}>{"---"}</option>
+                    }
+                    
+                    {problem_status_all?.map((problem_status) => <option key={problem_status.id} value={problem_status.id} onChange={onChange}>{problem_status.problem_status_text}</option>)}     
                 </Input>
             </FormGroup>
             <FormGroup>
@@ -125,7 +143,12 @@ const ProblemForm = (props) => {
                     type="select"
                     onChange={onChange}
                 >
-                    <option value={problem.object_of_work}>{objects_of_work?.filter(start => start.id === problem.object_of_work).map(filtered => filtered.object_of_work_text)}</option>
+                    {!props.newProblem ?
+                        <option value={problem.object_of_work}>{objects_of_work?.filter(filterObject => filterObject.id === problem.object_of_work).map(filteredObject => filteredObject.object_of_work_text)}</option>
+                    :
+                        <option value={null}>{"---"}</option>
+                    }
+                    
                     {objects_of_work?.map((object_of_work) => <option key={object_of_work.id} value={object_of_work.id} onChange={onChange}>{object_of_work.object_of_work_text}</option>)}     
                 </Input>
             </FormGroup>

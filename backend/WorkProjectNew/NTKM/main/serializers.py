@@ -12,7 +12,7 @@ class SectorSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    sector = SectorSerializer()
+    #sector = SectorSerializer(required=False)
 
     class Meta:
         model = User
@@ -71,10 +71,10 @@ class ObjectOfWorkSerializer(serializers.ModelSerializer):
 
 
 class ProblemSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    object_of_work = ObjectOfWorkSerializer()
-    problem_status = ProblemStatusSerializer()
-    problem_type = ProblemTypeSerializer()
+    #user = UserSerializer(required=False)
+    #object_of_work = ObjectOfWorkSerializer(required=False)
+    #problem_status = ProblemStatusSerializer(required=False)
+    #problem_type = ProblemTypeSerializer(required=False)
 
     class Meta:
         model = Problem
