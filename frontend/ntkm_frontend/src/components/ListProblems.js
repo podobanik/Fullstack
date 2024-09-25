@@ -1,8 +1,9 @@
 import React, {useMemo} from 'react'
-import { useTable, useSortBy, useGlobalFilter, usePagination} from 'react-table'
+import { useTable, useSortBy, useGlobalFilter, usePagination, useRowSelect, useColumnOrder} from 'react-table'
 import './table.css';
 import { GlobalFilter } from './GlobalFilter';
 import moment from 'moment'
+import { Checkbox } from './Checkbox';
 
 
 
@@ -58,7 +59,25 @@ export const ListProblems = (props) => {
       },
       useGlobalFilter,
       useSortBy,
-      usePagination
+      usePagination,
+      useRowSelect,
+      useColumnOrder,
+      (hooks) => {
+        hooks.visibleColumns.push((columns) => {
+          return [
+            {
+              id: 'selection',
+              Header: ({ getToggleAllRowsSelectedProps}) => (
+                <Checkbox {...getToggleAllRowsSelectedProps()} />
+              ),
+              Cell: ({row}) => (
+                <Checkbox {...row.getToggleRowSelectedProps()} />
+              ) 
+            },
+            ...columns
+          ]
+        })
+      }
     )
 
     const {
@@ -77,13 +96,21 @@ export const ListProblems = (props) => {
       prepareRow,
       state,
       setGlobalFilter,
+      selectedFlatRows,
+      setColumnOrder,
     } = tableInstanse
 
     const {globalFilter, pageIndex, pageSize} = state
 
 
+    const changeOrder = () => {
+      setColumnOrder(['problem_text', 'object_of_work', 'problem_type', 'problem_status', 'user', 'control_date', 'change_date'])
+    }
+
+
     return (
     <>
+        <button onClick={changeOrder}>Изменить положение колонок</button>
         <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
       <table {...getTableProps()}>
         <thead>
@@ -147,6 +174,17 @@ export const ListProblems = (props) => {
           }
         </select>
       </div>
+      <pre>
+          <code>
+            {JSON.stringify(
+              {
+                selectedFlatRows: selectedFlatRows.map((row) => row.original)
+              },
+              null,
+              2
+            )}
+          </code>
+        </pre>
     </>
   )
 }
