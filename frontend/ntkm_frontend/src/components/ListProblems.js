@@ -1,5 +1,5 @@
-import React, {useMemo} from 'react'
-import { useTable, useSortBy, useGlobalFilter, usePagination, useRowSelect, useColumnOrder} from 'react-table'
+import React, {useMemo} from 'react';
+import { useTable, useSortBy, useGlobalFilter, usePagination, useRowSelect} from 'react-table';
 import './table.css';
 import { GlobalFilter } from './GlobalFilter';
 import moment from 'moment'
@@ -61,7 +61,6 @@ export const ListProblems = (props) => {
       useSortBy,
       usePagination,
       useRowSelect,
-      useColumnOrder,
       (hooks) => {
         hooks.visibleColumns.push((columns) => {
           return [
@@ -96,22 +95,33 @@ export const ListProblems = (props) => {
       prepareRow,
       state,
       setGlobalFilter,
-      selectedFlatRows,
-      setColumnOrder,
+      allColumns,
+      getToggleHideAllColumnsProps,
     } = tableInstanse
 
     const {globalFilter, pageIndex, pageSize} = state
 
 
-    const changeOrder = () => {
-      setColumnOrder(['problem_text', 'object_of_work', 'problem_type', 'problem_status', 'user', 'control_date', 'change_date'])
-    }
 
 
     return (
     <>
-        <button onClick={changeOrder}>Изменить положение колонок</button>
         <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+        <div>
+          <div>
+            <Checkbox {...getToggleHideAllColumnsProps()} /> Выбрать всё
+          </div>
+          {
+            allColumns.map(column => (
+              <div key={column.id}>
+                <label>
+                  <input type='checkbox' {...column.getToggleHiddenProps()} />
+                  {column.Header}
+                </label>
+              </div>
+            ))
+          }
+        </div>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -174,7 +184,7 @@ export const ListProblems = (props) => {
           }
         </select>
       </div>
-      <pre>
+      {/* <pre>
           <code>
             {JSON.stringify(
               {
@@ -184,7 +194,7 @@ export const ListProblems = (props) => {
               2
             )}
           </code>
-        </pre>
+        </pre> */}
     </>
   )
 }
