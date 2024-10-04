@@ -67,7 +67,7 @@ const Home = () => {
         <Container style={{marginTop: "20px"}}>
             <Row>
                 <Col>
-                    <TestTable problems={problems} sectors={sectors} users={users} problem_type_all={problem_type_all} problem_status_all={problem_status_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
+                    <ListProblems problems={problems} sectors={sectors} users={users} problem_type_all={problem_type_all} problem_status_all={problem_status_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
                 </Col>
             </Row>
             <Row>

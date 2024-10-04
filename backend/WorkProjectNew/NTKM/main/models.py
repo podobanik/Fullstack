@@ -1,6 +1,6 @@
 from datetime import date, timezone
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
 
@@ -74,10 +74,27 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-
-class User(AbstractUser, PermissionsMixin):
+class Profile(models.Model):
     def __str__(self):
         description = str(self.last_name) + ' ' + str(self.first_name) + ' ' + str(self.second_name)
+        return description
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+
+    first_name = models.CharField(max_length=150, verbose_name='Имя')
+    last_name = models.CharField(max_length=150, verbose_name='Фамилия')
+    second_name = models.CharField(max_length=150, verbose_name='Отчество')
+    sector = models.ForeignKey(Sector, blank=True, null=True, on_delete=models.SET_NULL,
+                               verbose_name='Сектор сотрудника')
+    title = models.CharField(max_length=150, verbose_name='Должность')
+    birthday = models.DateField(default=date.today(), verbose_name='День рождения')
+    phone = models.IntegerField(verbose_name='Номер телефона', blank=True, null=True)
+
+class User(AbstractBaseUser, PermissionsMixin):
+    def __str__(self):
+        description = self.email
         return description
 
     class Meta:
@@ -87,16 +104,10 @@ class User(AbstractUser, PermissionsMixin):
     user_id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=150, unique=True, verbose_name='Адрес электронной почты')
     username = models.CharField(max_length=150, verbose_name='Логин')
-    first_name = models.CharField(max_length=150, verbose_name='Имя')
-    last_name = models.CharField(max_length=150, verbose_name='Фамилия')
-    second_name = models.CharField(max_length=150, verbose_name='Отчество')
-    sector = models.ForeignKey(Sector, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Сектор сотрудника')
-    title = models.CharField(max_length=150, verbose_name='Должность')
-    birthday = models.DateField(default=date.today(), verbose_name='День рождения')
-    phone = models.IntegerField(verbose_name='Номер телефона', blank=True, null=True)
+    profile = models.OneToOneField(Profile, blank=True, null=True, verbose_name="Профиль", on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['second_name', 'title', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username']
     objects = UserManager()
 
 
@@ -119,7 +130,7 @@ class Problem(models.Model):
     control_date = models.DateField(default=0, verbose_name='Контрольный срок')
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления задачи')
     change_date = models.DateTimeField(auto_now=True, verbose_name='Дата изменения задачи')
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name="Сотрудник", on_delete=models.SET_NULL)
+    profile = models.ForeignKey(Profile, blank=True, null=True, verbose_name="Сотрудник", on_delete=models.SET_NULL)
 
 
 

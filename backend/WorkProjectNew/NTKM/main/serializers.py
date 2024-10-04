@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
-from .models import Problem, User, Sector, ProblemType, ProblemStatus, ObjectOfWork
+from .models import Problem, User, Sector, ProblemType, ProblemStatus, ObjectOfWork, Profile
 
 
 class SectorSerializer(serializers.ModelSerializer):
@@ -11,18 +11,40 @@ class SectorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UserSerializer(serializers.ModelSerializer):
-    #sector = SectorSerializer(required=False)
+class ProfileSerializer(serializers.ModelSerializer):
+    sector = SectorSerializer()
 
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+    def create(self, validated_data):
+        sector_data = validated_data.pop('sector')
+        profile = Profile.objects.create(**validated_data)
+        Sector.objects.create(profile=profile, **sector_data)
+        return profile
+
+    def update(self, instance, validated_data):
+        if validated_data.get('sector'):
+            sector_data = validated_data.get('sector')
+            sector_serializer = SectorSerializer(data=sector_data)
+
+            if sector_serializer.is_valid():
+                sector = sector_serializer.update(instance = instance.sector,
+                                                  validated_data = sector_serializer.validated_data)
+                validated_data['sector'] = sector
+
+        return super().update(instance, validated_data)
+
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
-        read_only_fields = ('last_login', 'date_joined', )
+        read_only_field = 'last_login'
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    sector = SectorSerializer()
-
     class Meta:
         model = User
         fields = '__all__'
@@ -71,12 +93,36 @@ class ObjectOfWorkSerializer(serializers.ModelSerializer):
 
 
 class ProblemSerializer(serializers.ModelSerializer):
-    #user = UserSerializer(required=False)
-    #object_of_work = ObjectOfWorkSerializer(required=False)
-    #problem_status = ProblemStatusSerializer(required=False)
-    #problem_type = ProblemTypeSerializer(required=False)
+    profile = ProfileSerializer()
+    object_of_work = ObjectOfWorkSerializer()
+    problem_status = ProblemStatusSerializer()
+    problem_type = ProblemTypeSerializer()
 
     class Meta:
         model = Problem
         fields = "__all__"
         read_only_fields = ('add_date', 'change_date', )
+
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile')
+        problem_type_data = validated_data.pop('problem_type')
+        problem_status_data = validated_data.pop('problem_status')
+        object_of_work_data = validated_data.pop('object_of_work')
+
+        problem = Problem.objects.create(**validated_data)
+        Profile.objects.create(problem=problem, **profile_data)
+        ProblemType.objects.create(problem=problem, **problem_type_data)
+        ProblemStatus.objects.get(pk=problem_status_data.id)
+        return problem
+
+    def update(self, instance, validated_data):
+        if validated_data.get('sector'):
+            sector_data = validated_data.get('sector')
+            sector_serializer = SectorSerializer(data=sector_data)
+
+            if sector_serializer.is_valid():
+                sector = sector_serializer.update(instance = instance.sector,
+                                                  validated_data = sector_serializer.validated_data)
+                validated_data['sector'] = sector
+
+        return super().update(instance, validated_data)
