@@ -1,7 +1,8 @@
-from datetime import date, timezone
+from datetime import date
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.db import models
+from django.utils import timezone
 
 
 # ТПР, ТСБ, СБИБ
@@ -74,6 +75,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+
 class Profile(models.Model):
     def __str__(self):
         description = str(self.last_name) + ' ' + str(self.first_name) + ' ' + str(self.second_name)
@@ -89,8 +91,9 @@ class Profile(models.Model):
     sector = models.ForeignKey(Sector, blank=True, null=True, on_delete=models.SET_NULL,
                                verbose_name='Сектор сотрудника')
     title = models.CharField(max_length=150, verbose_name='Должность')
-    birthday = models.DateField(default=date.today(), verbose_name='День рождения')
+    birthday = models.DateField(default=timezone.now, verbose_name='День рождения')
     phone = models.IntegerField(verbose_name='Номер телефона', blank=True, null=True)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
@@ -104,6 +107,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=150, unique=True, verbose_name='Адрес электронной почты')
     username = models.CharField(max_length=150, verbose_name='Логин')
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(default=timezone.now)
     profile = models.OneToOneField(Profile, blank=True, null=True, verbose_name="Профиль", on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
