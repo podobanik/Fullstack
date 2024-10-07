@@ -1,10 +1,9 @@
 import {Container, Row, Col} from "reactstrap";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import ModalProblem from "../Problems/ModalProblem";
-import {API_URL_PROBLEMS, API_URL_USERS, API_URL_PROBLEM_STATUS_ALL, API_URL_PROBLEM_TYPE_ALL, API_URL_OBJECTS_OF_WORK, API_URL_SECTORS} from "./App";
-import { ListProblems } from "../components/ListProblems";
-import { TestTable } from "../components/TestTable";
+import ModalProblem from "../Problems/ModalProblem.js";
+import {API_URL_PROBLEMS, API_URL_PROFILES, API_URL_PROBLEM_STATUS_ALL, API_URL_PROBLEM_TYPE_ALL, API_URL_OBJECTS_OF_WORK, API_URL_SECTORS} from "./App.jsx";
+import ProblemTable from "../components/ProblemTable.jsx";
 
 
 
@@ -14,7 +13,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 const Home = () => {
     const [problems, setProblems] = useState([])
-    const [users, setUsers] = useState([])
+    const [profiles, setProfiles] = useState([])
     const [problem_type_all, setProblemTypeAll] = useState([])
     const [problem_status_all, setProblemStatusAll] = useState([])
     const [objects_of_work, setObjectsOfWork] = useState([])
@@ -24,7 +23,7 @@ const Home = () => {
 
     useEffect(()=>{
         getSectors()
-        getUsers()
+        getProfiles()
         getProblems()
         getProblemTypeAll()
         getProblemStatusAll()
@@ -35,8 +34,8 @@ const Home = () => {
     const getSectors = (data)=>{
         axios.get(API_URL_SECTORS, {withCredentials: true}).then(data => setSectors(data.data))
     }
-    const getUsers = (data)=>{
-        axios.get(API_URL_USERS, {withCredentials: true}).then(data => setUsers(data.data))
+    const getProfiles = (data)=>{
+        axios.get(API_URL_PROFILES, {withCredentials: true}).then(data => setProfiles(data.data))
     }
     const getProblems = (data)=>{
         axios.get(API_URL_PROBLEMS, {withCredentials: true}).then(data => setProblems(data.data))
@@ -55,7 +54,7 @@ const Home = () => {
 
     const resetState = () => {
         getSectors();
-        getUsers();
+        getProfiles();
         getProblems();
         getProblemTypeAll();
         getProblemStatusAll();
@@ -67,7 +66,7 @@ const Home = () => {
         <Container style={{marginTop: "20px"}}>
             <Row>
                 <Col>
-                    <ListProblems problems={problems} sectors={sectors} users={users} problem_type_all={problem_type_all} problem_status_all={problem_status_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
+                    <ProblemTable problems={problems} sectors={sectors} profiles={profiles} problem_type_all={problem_type_all} problem_status_all={problem_status_all} objects_of_work={objects_of_work} resetState={resetState} newProblem={false}/>
                 </Col>
             </Row>
             <Row>
@@ -75,7 +74,7 @@ const Home = () => {
                     <ModalProblem
                     create={true}
                     sectors={sectors}
-                    users={users}
+                    profiles={profiles}
                     problem_type_all={problem_type_all}
                     problem_status_all={problem_status_all}
                     objects_of_work={objects_of_work}

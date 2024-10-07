@@ -1,4 +1,4 @@
-const SortIcon = (props) => (
+const SearchIcon = (props) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -10,9 +10,9 @@ const SortIcon = (props) => (
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
+        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
       />
     </svg>
   );
   
-  export default SortIcon;
+  export default SearchIcon;

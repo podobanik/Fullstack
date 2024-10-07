@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Button, Form, FormGroup, Input, Label} from "reactstrap";
 import axios from "axios";
-import {API_URL_PROBLEMS} from "../App/App";
+import {API_URL_PROBLEMS} from "../App/App.jsx";
 
 
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -10,7 +10,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 const ProblemForm = (props) => {
     const [problem, setProblem] = useState({})
-    const {users} = props
+    const {profiles} = props
     const {problem_status_all} = props
     const {problem_type_all} = props
     const {objects_of_work} = props
@@ -49,7 +49,7 @@ const ProblemForm = (props) => {
         e.preventDefault();
         const data = {
             problem_text: problem['problem_text'],
-            user: problem['user'],
+            profile: problem['profile'],
             problem_type: problem['problem_type'],
             problem_status: problem['problem_status'],
             object_of_work: problem['object_of_work'],
@@ -82,17 +82,17 @@ const ProblemForm = (props) => {
                 </Label>
                 <Input
                     id="userSelect"
-                    name="user"
+                    name="profile"
                     type="select"
                     onChange={onChange}
                 >
                     {!props.newProblem ?
-                        <option value={problem.user}>{users?.filter(filterUser => filterUser.user_id === problem.user).map(filteredUser => (filteredUser.last_name + " " + filteredUser.first_name + " " + filteredUser.second_name))}</option>
+                        <option value={problem.profile}>{profiles?.filter(filterProfile => filterProfile.id === problem.profile).map(filteredProfile => (filteredProfile.last_name + " " + filteredProfile.first_name + " " + filteredProfile.second_name))}</option>
                     :
                         <option value={null}>{"---"}</option>
                     }
                     
-                    {users?.map((user) => <option key={user.user_id} value={user.user_id} onChange={onChange}> {(user.last_name + " " + user.first_name + " " + user.second_name)}</option>)}     
+                    {profiles?.map((profile) => <option key={profile.id} value={profile.id} onChange={onChange}> {(profile.last_name + " " + profile.first_name + " " + profile.second_name)}</option>)}     
                 </Input>
             </FormGroup>
             <FormGroup>

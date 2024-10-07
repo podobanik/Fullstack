@@ -30,7 +30,7 @@ const ModalProblem = (props) => {
                 <ModalBody>
                     <ProblemForm
                         problem={props.problem ? props.problem : []}
-                        users={props.users}
+                        profiles={props.profiles}
                         problem_type_all={props.problem_type_all}
                         problem_status_all={props.problem_status_all}
                         objects_of_work={props.objects_of_work}

@@ -1,6 +1,6 @@
 from datetime import date
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.utils import timezone
 
@@ -14,6 +14,7 @@ class ProblemType(models.Model):
         verbose_name = 'Категория задачи'
         verbose_name_plural = 'Категории задач'
 
+    id = models.AutoField(primary_key=True)
     problem_type_text = models.CharField(max_length=200, verbose_name='Категория задачи')
 
 
@@ -26,6 +27,7 @@ class Sector(models.Model):
         verbose_name = 'Сектор'
         verbose_name_plural = 'Секторы'
 
+    id = models.AutoField(primary_key=True)
     sector_text = models.CharField(max_length=200, verbose_name='Сектор сотрудника')
 
 
@@ -38,7 +40,9 @@ class ProblemStatus(models.Model):
         verbose_name = 'Статус задачи'
         verbose_name_plural = 'Статусы задач'
 
+    id = models.AutoField(primary_key=True)
     problem_status_text = models.CharField(max_length=200, verbose_name='Статус выполнения задачи')
+    color = models.CharField(max_length=200, verbose_name='Цвет', default='gray.900')
 
 
 # НПС, ТДП, РДП
@@ -50,6 +54,7 @@ class ObjectOfWork(models.Model):
         verbose_name = 'Объект АСУТП'
         verbose_name_plural = 'Объекты АСУТП'
 
+    id = models.AutoField(primary_key=True)
     object_of_work_text = models.CharField(max_length=200, verbose_name='Объект производства работ')
 
 
@@ -62,16 +67,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email)
         user.set_password(password)
-        user.save()
-        return user
 
-    def create_superuser(self, email, password=None):
-        if not email:
-            raise ValueError('Необходимо ввести адрес электронной почты.')
-        if not password:
-            raise ValueError('Необходимо ввести пароль.')
-        user = self.create_user(email, password)
-        user.is_superuser = True
         user.save()
         return user
 
@@ -95,7 +91,7 @@ class Profile(models.Model):
     phone = models.IntegerField(verbose_name='Номер телефона', blank=True, null=True)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser):
     def __str__(self):
         description = self.email
         return description
