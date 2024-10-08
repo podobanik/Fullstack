@@ -6,11 +6,6 @@ import {API_URL_PROBLEMS, API_URL_PROFILES, API_URL_PROBLEM_STATUS_ALL, API_URL_
 import ProblemTable from "../components/ProblemTable.jsx";
 
 
-
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-
-
 const Home = () => {
     const [problems, setProblems] = useState([])
     const [profiles, setProfiles] = useState([])

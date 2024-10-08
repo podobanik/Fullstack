@@ -14,7 +14,7 @@ from .validations import custom_validation, validate_email, validate_password
 
 
 class UserRegister(APIView):
-    #permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.AllowAny, )
 
     def post(self, request):
         validated_data = custom_validation(request.data)
@@ -27,7 +27,7 @@ class UserRegister(APIView):
 
 
 class UserLogin(APIView):
-    #permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.AllowAny, )
 
     def post(self, request):
         data = request.data

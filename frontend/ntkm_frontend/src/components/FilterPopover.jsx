@@ -12,7 +12,6 @@ import {
     Flex,
   } from "@chakra-ui/react";
   import FilterIcon from "./icons/FilterIcon";
-  //import { STATUSES } from "../data";
   import { ColorIcon } from "./StatusCell";
   
   const StatusItem = ({ status, setColumnFilters, isActive }) => (
@@ -54,7 +53,7 @@ import {
     </Flex>
   );
   
-  const FilterPopover = ({ columnFilters, setColumnFilters, problem_status_all }) => {
+  const FilterPopover = ({ columnFilters, setColumnFilters }) => {
     const filterStatuses =
       columnFilters.find((f) => f.id === "status")?.value || [];
   

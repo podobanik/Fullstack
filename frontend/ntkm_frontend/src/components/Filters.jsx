@@ -8,7 +8,7 @@ import {
   import SearchIcon from "./icons/SearchIcon";
   import FilterPopover from "./FilterPopover";
   
-  const Filters = ({ columnFilters, setColumnFilters, problem_status_all }) => {
+  const Filters = ({ columnFilters, setColumnFilters }) => {
     const taskName = columnFilters.find((f) => f.id === "task")?.value || "";
   
     const onFilterChange = (id, value) =>
@@ -39,7 +39,6 @@ import {
         <FilterPopover
           columnFilters={columnFilters}
           setColumnFilters={setColumnFilters}
-          problem_status_all={problem_status_all}
         />
       </HStack>
     );

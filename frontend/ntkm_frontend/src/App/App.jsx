@@ -6,6 +6,8 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Home from "./Home";
 import {Button, Form, FormGroup, Input, Label} from "reactstrap";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "./theme/theme.js";
 
 
 export const API_URL_PROBLEMS = "http://127.0.0.1:8000/problems/"
@@ -57,9 +59,6 @@ function App() {
       {
         email: email,
         password: password
-      },
-      {
-        withCredentials: true
       }
     ).then(function(res) {
       setCurrentUser(true);
@@ -69,10 +68,7 @@ function App() {
   function submitLogout(e) {
     e.preventDefault();
     client.post(
-      "/logout/",
-      {
-        withCredentials: true,
-      }
+      "/logout/"
     ).then(function(res) {
       setCurrentUser(false);
     });
@@ -82,23 +78,25 @@ function App() {
   if (currentUser) {
     return (
       <div>
-        <Navbar bg="info" variant="info">
-          <Container>
-            <Navbar.Brand>Учёт работ ОСПАС</Navbar.Brand>
-            <Navbar.Toggle />
-            <Navbar.Collapse className="justify-content-end">
-              <Navbar.Text>
-                <form onSubmit={e => submitLogout(e)}>
-                  <Button type="submit" variant="light">Выход</Button>
-                </form>
-              </Navbar.Text>
+        <ChakraProvider theme={theme}>
+          <Navbar>
+            <Container>
+             <Navbar.Brand>Учёт работ ОСПАС</Navbar.Brand>
+             <Navbar.Toggle />
+              <Navbar.Collapse className="justify-content-end">
+                <Navbar.Text>
+                  <form onSubmit={e => submitLogout(e)}>
+                    <Button type="submit" variant="light">Выход</Button>
+                  </form>
+                </Navbar.Text>
             </Navbar.Collapse>
-          </Container>
-        </Navbar>
-        <Fragment>
-          <Home />
-        </Fragment>
-        </div>
+            </Container>
+          </Navbar>
+          <Fragment>
+            <Home />
+          </Fragment>
+        </ChakraProvider>
+      </div>
     );
   }
   return (
