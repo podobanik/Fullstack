@@ -100,7 +100,7 @@ class User(AbstractBaseUser):
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
 
-    user_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=150, unique=True, verbose_name='Адрес электронной почты')
     username = models.CharField(max_length=150, verbose_name='Логин')
     is_active = models.BooleanField(default=True)

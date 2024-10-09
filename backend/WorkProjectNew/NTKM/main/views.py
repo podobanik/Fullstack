@@ -1,20 +1,15 @@
-from django.http import HttpResponseRedirect
-from rest_framework.authentication import SessionAuthentication
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import login, logout
 from rest_framework.views import APIView
-
-
-from .permissions import IsAdminOrIsOwner
+from rest_framework.exceptions import PermissionDenied
+from .permissions import IsAdminOrIsOwner, IsAdmin
 from .serializers import *
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, action
-from rest_framework import status, generics, viewsets, permissions
+from rest_framework import status, viewsets, permissions
 from .models import Problem, User, Sector, ProblemType, ProblemStatus, ObjectOfWork, Profile
 from .validations import custom_validation, validate_email, validate_password
 
 
 class UserRegister(APIView):
-    permission_classes = (permissions.AllowAny, )
 
     def post(self, request):
         validated_data = custom_validation(request.data)
@@ -27,7 +22,6 @@ class UserRegister(APIView):
 
 
 class UserLogin(APIView):
-    permission_classes = (permissions.AllowAny, )
 
     def post(self, request):
         data = request.data
@@ -41,15 +35,13 @@ class UserLogin(APIView):
 
 
 class UserLogout(APIView):
-    #authentication_classes = (SessionAuthentication,)
 
-    def post(self, request):
-        logout(request)
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
 
 class UserCheckView(APIView):
-    #authentication_classes = (SessionAuthentication, )
 
     def get(self, request):
         serializer = UserCheckSerializer(request.user)
@@ -58,7 +50,7 @@ class UserCheckView(APIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    #authentication_classes = (SessionAuthentication,)
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -71,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
-    #authentication_classes = (SessionAuthentication,)
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -84,7 +76,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class SectorViewSet(viewsets.ModelViewSet):
     serializer_class = SectorSerializer
-    #authentication_classes = (SessionAuthentication, )
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -97,7 +89,7 @@ class SectorViewSet(viewsets.ModelViewSet):
 
 class ProblemStatusViewSet(viewsets.ModelViewSet):
     serializer_class = ProblemStatusSerializer
-    #authentication_classes = (SessionAuthentication, )
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -110,7 +102,7 @@ class ProblemStatusViewSet(viewsets.ModelViewSet):
 
 class ProblemTypeViewSet(viewsets.ModelViewSet):
     serializer_class = ProblemTypeSerializer
-    #authentication_classes = (SessionAuthentication, )
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -123,7 +115,7 @@ class ProblemTypeViewSet(viewsets.ModelViewSet):
 
 class ObjectOfWorkViewSet(viewsets.ModelViewSet):
     serializer_class = ObjectOfWorkSerializer
-    #authentication_classes = (SessionAuthentication, )
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -135,7 +127,7 @@ class ObjectOfWorkViewSet(viewsets.ModelViewSet):
 
 
 class ProblemViewSet(viewsets.ModelViewSet):
-    #authentication_classes = (SessionAuthentication,)
+    permission_class = permissions.IsAuthenticatedOrReadOnly
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
