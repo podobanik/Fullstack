@@ -45,17 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_obj = User.objects.create_user(email=validated_data['email'], password=validated_data['password'])
         user_obj.username = validated_data['username']
-        if validated_data['is_active'] or validated_data['is_active'] is not None:
-            user_obj.is_active = validated_data['is_active']
-        else:
-            raise ValidationError('Укажите активность пользователя')
-        if validated_data['is_staff'] or validated_data['is_staff'] is not None:
-            user_obj.is_staff = validated_data['is_staff']
-        else:
-            raise ValidationError('Укажите тип пользователя')
-        if validated_data['profile'] or validated_data['profile'] is not None:
-            user_obj.profile = validated_data['profile']
-
         user_obj.save()
         return user_obj
 

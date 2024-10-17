@@ -16,6 +16,8 @@ router.register(r'profiles', ProfileViewSet, basename='profiles')
 app_name = 'main'
 urlpatterns = [
     path('auth/', include('djoser.urls')),
+    path('logout/', UserLogout.as_view(), name='Выход'),
+    path('register/', UserRegister.as_view(), name='Регистрация'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)),

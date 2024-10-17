@@ -1,6 +1,8 @@
 from django.contrib.auth import login, logout
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .permissions import IsAdminOrIsOwner, IsAdmin
 from .serializers import *
 from rest_framework.response import Response
@@ -10,6 +12,8 @@ from .validations import custom_validation, validate_email, validate_password
 
 
 class UserRegister(APIView):
+    permission_classes = (permissions.AllowAny, )
+    authentication_classes = (JWTAuthentication,)
 
     def post(self, request):
         validated_data = custom_validation(request.data)
@@ -22,6 +26,8 @@ class UserRegister(APIView):
 
 
 class UserLogin(APIView):
+    permission_classes = (permissions.AllowAny, )
+    authentication_classes = (JWTAuthentication,)
 
     def post(self, request):
         data = request.data
@@ -35,6 +41,8 @@ class UserLogin(APIView):
 
 
 class UserLogout(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get(self, request, format=None):
         request.user.auth_token.delete()
@@ -42,6 +50,8 @@ class UserLogout(APIView):
 
 
 class UserCheckView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication,)
 
     def get(self, request):
         serializer = UserCheckSerializer(request.user)
@@ -50,7 +60,8 @@ class UserCheckView(APIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -63,7 +74,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -76,7 +88,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class SectorViewSet(viewsets.ModelViewSet):
     serializer_class = SectorSerializer
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -89,7 +102,8 @@ class SectorViewSet(viewsets.ModelViewSet):
 
 class ProblemStatusViewSet(viewsets.ModelViewSet):
     serializer_class = ProblemStatusSerializer
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -102,7 +116,8 @@ class ProblemStatusViewSet(viewsets.ModelViewSet):
 
 class ProblemTypeViewSet(viewsets.ModelViewSet):
     serializer_class = ProblemTypeSerializer
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -115,7 +130,8 @@ class ProblemTypeViewSet(viewsets.ModelViewSet):
 
 class ObjectOfWorkViewSet(viewsets.ModelViewSet):
     serializer_class = ObjectOfWorkSerializer
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -127,7 +143,8 @@ class ObjectOfWorkViewSet(viewsets.ModelViewSet):
 
 
 class ProblemViewSet(viewsets.ModelViewSet):
-    permission_class = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
