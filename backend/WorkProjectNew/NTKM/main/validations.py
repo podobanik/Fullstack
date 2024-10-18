@@ -5,9 +5,9 @@ from .models import Profile
 
 
 def custom_validation(data):
-    email = data['email'].strip()
-    username = data['username'].strip()
-    password = data['password'].strip()
+    username = data["username"].strip()
+    email = data["email"].strip()
+    password = data["password"].strip()
 
     if not email or User.objects.filter(email=email).exists():
         raise ValidationError('Введите другой адрес электронной почты.')

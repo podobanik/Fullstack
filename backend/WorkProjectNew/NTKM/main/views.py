@@ -17,7 +17,7 @@ class UserRegister(APIView):
 
     def post(self, request):
         validated_data = custom_validation(request.data)
-        serializer = UserSerializer(data=validated_data)
+        serializer = UserWriteSerializer(data=validated_data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.create(validated_data)
             if user:
@@ -49,19 +49,14 @@ class UserLogout(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class UserCheckView(APIView):
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication,)
-
-    def get(self, request):
-        serializer = UserCheckSerializer(request.user)
-        return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-
-
 class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return UserReadSerializer
+        return UserWriteSerializer
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
