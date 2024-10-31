@@ -1,21 +1,20 @@
-from django.contrib.auth import login, logout
 from rest_framework.views import APIView
-from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .permissions import IsAdminOrIsOwner, IsAdmin
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status, viewsets, permissions
-from .models import Problem, User, Sector, ProblemType, ProblemStatus, ObjectOfWork, Profile
-from .validations import custom_validation, validate_email, validate_password
+from .models import Problem, User, Journal, Folder
+from .validations import custom_validation
 
 
+# Приложение с сотрудниками
 class UserRegister(APIView):
     permission_classes = (permissions.AllowAny, )
     authentication_classes = (JWTAuthentication,)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         validated_data = custom_validation(request.data)
         serializer = UserWriteSerializer(data=validated_data)
         if serializer.is_valid(raise_exception=True):
@@ -25,28 +24,24 @@ class UserRegister(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserLogin(APIView):
-    permission_classes = (permissions.AllowAny, )
-    authentication_classes = (JWTAuthentication,)
-
-    def post(self, request):
-        data = request.data
-        assert validate_email(data)
-        assert validate_password(data)
-        serializer = UserLoginSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.check_user(data)
-            login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 class UserLogout(APIView):
     permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+class UserCheckView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+
+    @staticmethod
+    def get(request):
+        serializer = UserCheckSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -67,76 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.filter(pk=pk)
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
-    serializer_class = ProfileSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return Profile.objects.all()
-
-        return Profile.objects.filter(pk=pk)
-
-
-class SectorViewSet(viewsets.ModelViewSet):
-    serializer_class = SectorSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return Sector.objects.all()
-
-        return Sector.objects.filter(pk=pk)
-
-
-class ProblemStatusViewSet(viewsets.ModelViewSet):
-    serializer_class = ProblemStatusSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return ProblemStatus.objects.all()
-
-        return ProblemStatus.objects.filter(pk=pk)
-
-
-class ProblemTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = ProblemTypeSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return ProblemType.objects.all()
-
-        return ProblemType.objects.filter(pk=pk)
-
-
-class ObjectOfWorkViewSet(viewsets.ModelViewSet):
-    serializer_class = ObjectOfWorkSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return ObjectOfWork.objects.all()
-
-        return ObjectOfWork.objects.filter(pk=pk)
-
-
+# Приложение с задачами отдела
 class ProblemViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
@@ -153,3 +79,37 @@ class ProblemViewSet(viewsets.ModelViewSet):
             return Problem.objects.all()
 
         return Problem.objects.filter(pk=pk)
+
+
+# Приложение с заметками
+class JournalViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return JournalReadSerializer
+        return JournalWriteSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return Journal.objects.all()
+
+        return Journal.objects.filter(pk=pk)
+
+
+#
+class FolderViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = FolderSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return Folder.objects.all()
+
+        return Folder.objects.filter(pk=pk)
