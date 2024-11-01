@@ -8,6 +8,7 @@ router.register(r'problems', ProblemViewSet, basename='problems')
 router.register(r'users', UserViewSet, basename='users')
 router.register(r'journals', JournalViewSet, basename='journals')
 router.register(r'folders', FolderViewSet, basename='folders')
+router.register(r'problem_status_all', ProblemStatusViewSet, basename='problem_status_all')
 
 
 

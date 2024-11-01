@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+
+from datetime import timedelta
 from django.conf.global_settings import AUTH_USER_MODEL
 
 from .DB_auth import login, password, name_db
@@ -128,7 +130,12 @@ REST_FRAMEWORK = {
     ]
 }
 
-
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=6),
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

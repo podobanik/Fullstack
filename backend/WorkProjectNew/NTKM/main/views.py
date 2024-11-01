@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status, viewsets, permissions
-from .models import Problem, User, Journal, Folder
+from .models import Problem, User, Journal, Folder, ProblemStatus
 from .validations import custom_validation
 
 
@@ -113,3 +113,17 @@ class FolderViewSet(viewsets.ModelViewSet):
             return Folder.objects.all()
 
         return Folder.objects.filter(pk=pk)
+
+
+class ProblemStatusViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = ProblemStatusSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return ProblemStatus.objects.all()
+
+        return ProblemStatus.objects.filter(pk=pk)

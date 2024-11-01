@@ -146,7 +146,7 @@ class Problem(models.Model):
     control_date = models.DateField(default=0, verbose_name='Контрольный срок')
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления задачи')
     change_date = models.DateTimeField(auto_now=True, verbose_name='Дата изменения задачи')
-    profile = models.ForeignKey(Profile, blank=True, null=True, verbose_name="Сотрудник", on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name="Сотрудник", on_delete=models.SET_NULL)
     file = models.ManyToManyField(File, verbose_name='Вложения')
 
 

@@ -100,14 +100,14 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class ProblemReadSerializer(serializers.ModelSerializer):
-    profile = ProfileReadSerializer()
+    user = UserReadSerializer()
     problem_status = ProblemStatusSerializer()
     file = FileSerializer()
 
     class Meta:
         model = Problem
         fields = "__all__"
-        read_only_fields = ('id', 'problem_text', 'add_date', 'change_date', 'problem_status', 'problem_type', 'object_of_work', 'profile', 'control_date', 'file', )
+        read_only_fields = ('id', 'problem_text', 'add_date', 'change_date', 'problem_status', 'problem_type', 'object_of_work', 'user', 'control_date', 'file', )
 
 
 class ProblemWriteSerializer(serializers.ModelSerializer):
@@ -120,7 +120,7 @@ class ProblemWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         file_data = validated_data.pop('file')
-        file=File.objects.create(**file_data)
+        file = File.objects.create(**file_data)
         problem = Problem.objects.create(**validated_data)
         problem.file = file
         return problem
