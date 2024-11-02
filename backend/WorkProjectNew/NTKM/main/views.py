@@ -45,7 +45,7 @@ class UserCheckView(APIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.AllowAny, )
     authentication_classes = (JWTAuthentication, )
 
     def get_serializer_class(self):
