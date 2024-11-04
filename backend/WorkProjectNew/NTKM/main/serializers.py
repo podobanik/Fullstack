@@ -157,5 +157,5 @@ class JournalWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journal
         fields = "__all__"
-        read_only_fields = ('add_date', 'change_date', 'user',)
+        read_only_fields = ('add_date', 'change_date', )
 

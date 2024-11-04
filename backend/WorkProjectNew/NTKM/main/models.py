@@ -54,7 +54,7 @@ class Profile(models.Model):
                                verbose_name='Сектор сотрудника')
     title = models.CharField(max_length=150, verbose_name='Должность')
     birthday = models.DateField(default=timezone.now, verbose_name='День рождения')
-    phone = models.IntegerField(verbose_name='Номер телефона', blank=True, null=True)
+    phone = models.CharField(max_length=11, default='',verbose_name='Номер телефона')
     photoURL = models.ImageField(verbose_name="Фото", upload_to='images', blank=True, null=True)
 
 
@@ -161,7 +161,7 @@ class Folder(models.Model):
 
     name = models.CharField(max_length=200, verbose_name='Название папки')
     color = models.CharField(max_length=200, verbose_name='Цвет', default='gray.900')
-
+    user = models.ForeignKey(User, verbose_name="Папка", blank=True, null=True, on_delete=models.CASCADE)
 
 # Основной класс приложения с заметками
 class Journal(models.Model):
@@ -176,5 +176,5 @@ class Journal(models.Model):
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления заметки')
     change_date = models.DateTimeField(auto_now=True, verbose_name='Дата изменения заметки')
     folder = models.ForeignKey(Folder, default=1, verbose_name="Папка", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, verbose_name="Папка", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name="Папка", blank=True, null=True, on_delete=models.CASCADE)
     post = models.TextField(max_length=1000, verbose_name='Текст заметки')
