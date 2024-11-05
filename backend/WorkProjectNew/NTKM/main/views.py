@@ -4,13 +4,13 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status, viewsets, permissions
-from .models import Problem, User, Journal, Folder, ProblemStatus
+from .models import Problem, User, Journal, Folder, ProblemStatus, Sector
 from .validations import custom_validation
 
 
 # Приложение с сотрудниками
 class UserRegister(APIView):
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = (JWTAuthentication,)
 
     @staticmethod
@@ -114,6 +114,19 @@ class FolderViewSet(viewsets.ModelViewSet):
 
         return Folder.objects.filter(pk=pk)
 
+
+class SectorViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = SectorSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return Sector.objects.all()
+
+        return Sector.objects.filter(pk=pk)
 
 class ProblemStatusViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
