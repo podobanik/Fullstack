@@ -93,6 +93,18 @@ class ProblemStatusSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProblemTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemType
+        fields = '__all__'
+
+
+class ObjectOfWorkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ObjectOfWork
+        fields = '__all__'
+
+
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
@@ -103,6 +115,8 @@ class ProblemReadSerializer(serializers.ModelSerializer):
     user = UserReadSerializer()
     problem_status = ProblemStatusSerializer()
     file = FileSerializer()
+    object_of_work = ObjectOfWorkSerializer()
+    problem_type = ProblemTypeSerializer()
 
     class Meta:
         model = Problem

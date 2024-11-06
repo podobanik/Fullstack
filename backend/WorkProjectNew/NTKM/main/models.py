@@ -141,8 +141,10 @@ class Problem(models.Model):
     problem_text = models.TextField(max_length=1000, verbose_name='Введите название задачи')
     problem_status = models.ForeignKey(ProblemStatus, blank=True, null=True, on_delete=models.SET_NULL,
                                        verbose_name='Выберите статус задачи')
-    object_of_work = models.CharField(max_length=150, default='', verbose_name='Объект АСУТП')
-    problem_type = models.CharField(max_length=150, default='', verbose_name='Введите категорию задачи')
+    object_of_work = models.ForeignKey(ObjectOfWork, blank=True, null=True, on_delete=models.SET_NULL,
+                                       verbose_name='Объект производства работ')
+    problem_type = models.ForeignKey(ProblemType, blank=True, null=True, on_delete=models.SET_NULL,
+                                       verbose_name='Категория задачи')
     control_date = models.DateField(default=0, verbose_name='Контрольный срок')
     add_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления задачи')
     change_date = models.DateTimeField(auto_now=True, verbose_name='Дата изменения задачи')

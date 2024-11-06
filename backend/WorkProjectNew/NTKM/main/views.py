@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status, viewsets, permissions
-from .models import Problem, User, Journal, Folder, ProblemStatus, Sector
+from .models import Problem, User, Journal, Folder, ProblemStatus, Sector, ProblemType, ObjectOfWork
 from .validations import custom_validation
 
 
@@ -45,7 +45,7 @@ class UserCheckView(APIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
 
     def get_serializer_class(self):
@@ -62,7 +62,63 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.filter(pk=pk)
 
 
+class SectorViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = SectorSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return Sector.objects.all()
+
+        return Sector.objects.filter(pk=pk)
+
+
 # Приложение с задачами отдела
+class ProblemStatusViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = ProblemStatusSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return ProblemStatus.objects.all()
+
+        return ProblemStatus.objects.filter(pk=pk)
+
+
+class ProblemTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = ProblemTypeSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return ProblemType.objects.all()
+
+        return ProblemType.objects.filter(pk=pk)
+
+
+class ObjectOfWorkViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = ObjectOfWorkSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+
+        if not pk:
+            return ObjectOfWork.objects.all()
+
+        return ObjectOfWork.objects.filter(pk=pk)
+
+
 class ProblemViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
@@ -115,28 +171,3 @@ class FolderViewSet(viewsets.ModelViewSet):
         return Folder.objects.filter(pk=pk)
 
 
-class SectorViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-    serializer_class = SectorSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return Sector.objects.all()
-
-        return Sector.objects.filter(pk=pk)
-
-class ProblemStatusViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (JWTAuthentication, )
-    serializer_class = ProblemStatusSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-
-        if not pk:
-            return ProblemStatus.objects.all()
-
-        return ProblemStatus.objects.filter(pk=pk)
