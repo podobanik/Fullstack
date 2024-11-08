@@ -20,7 +20,7 @@ const Login = () => {
     state: { openLogin },
     dispatch,
   } = useValue();
-  const title ='Авторизация';
+  const title ='Аутентификация';
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -74,7 +74,7 @@ const Login = () => {
         </DialogContent>
         <DialogActions sx={{ px: '19px' }}>
           <Button type="submit" variant="contained" endIcon={<Send />}>
-            Авторизоваться
+            Войти
           </Button>
         </DialogActions>
       </form>

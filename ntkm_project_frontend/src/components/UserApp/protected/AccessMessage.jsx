@@ -8,8 +8,8 @@ const AccessMessage = () => {
   return (
     <Container sx={{ py: 10 }}>
       <Alert severity="error" variant="outlined">
-        <AlertTitle>Доступ запрещён!</AlertTitle>
-        Пожалуйста зарегистрируйтесь или авторизуйтесь, чтобы получить доступ к этой странице.
+        <AlertTitle><h3>Доступ запрещён!</h3></AlertTitle>
+        <h3>Пожалуйста зарегистрируйтесь или авторизуйтесь, чтобы получить доступ к этой странице.</h3>
         <Button
           variant="outlined"
           sx={{ ml: 2 }}
